@@ -73,6 +73,7 @@ class LanguagePack::Ruby < LanguagePack::Base
 
   def compile
     Dir.chdir(build_path)
+    topic "Buildpack Version: #{@metadata.read("buildpack_version")}"
     remove_vendor_bundle
     install_ruby
     install_jvm
