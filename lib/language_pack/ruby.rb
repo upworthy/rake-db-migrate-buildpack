@@ -338,12 +338,7 @@ WARNING
   def install_jvm
     instrument 'ruby.install_jvm' do
       if ruby_version_jruby?
-        jvm_version =
-          if Gem::Version.new(ruby_version.split("-").last) < Gem::Version.new("1.7.4")
-            JVM_LEGACY_VERSION
-          else
-            JVM_VERSION
-          end
+        jvm_version = JVM_LEGACY_VERSION
 
         topic "Installing JVM: #{jvm_version}"
 
