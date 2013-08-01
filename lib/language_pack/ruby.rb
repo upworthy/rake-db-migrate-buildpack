@@ -93,6 +93,7 @@ class LanguagePack::Ruby < LanguagePack::Base
         build_bundler
         create_database_yml
         install_binaries
+        run_db_migrate_rake_task
         run_assets_precompile_rake_task
       end
       super
@@ -682,6 +683,20 @@ params = CGI.parse(uri.query || "")
   # @return [Array] the node.js binary path if we need it or an empty Array
   def add_node_js_binary
     gem_is_bundled?('execjs') ? [NODE_JS_BINARY_PATH] : []
+  end
+
+  def run_db_migrate_rake_task
+    instrument 'ruby.run_db_migrate_rake_task' do
+      if rake_task_defined?("db:migrate")
+        require 'benchmark'
+
+        topic "Running: rake db:migrate"
+        time = Benchmark.realtime { pipe("env PATH=$PATH:bin bundle exec rake db:migrate 2>&1") }
+        if $?.success?
+          puts "Database migration completed (#{"%.2f" % time}s)"
+        end
+      end
+    end
   end
 
   def run_assets_precompile_rake_task
