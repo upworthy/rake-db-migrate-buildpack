@@ -44,6 +44,25 @@ private
     super.concat(%w( rails3_serve_static_assets )).uniq
   end
 
+  # sets up DATABASE_URL before running rake db:migrate
+  def run_db_migrate_rake_task
+    instrument "rails3.run_db_migrate_rake_task" do
+      log("db_migrate") do
+        setup_database_url_env
+
+        if rake_task_defined?("db:migrate")
+          require 'benchmark'
+
+          topic "Running: rake db:migrate"
+          time = Benchmark.realtime { pipe("env PATH=$PATH:bin bundle exec rake db:migrate 2>&1") }
+          if $?.success?
+            puts "Database migration completed (#{"%.2f" % time}s)"
+          end
+        end
+      end
+    end
+  end
+
   # runs the tasks for the Rails 3.1 asset pipeline
   def run_assets_precompile_rake_task
     instrument "rails3.run_assets_precompile_rake_task" do
