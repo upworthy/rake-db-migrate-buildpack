@@ -1,7 +1,11 @@
 Heroku buildpack: Ruby
 ======================
 
-This is a [Heroku buildpack](http://devcenter.heroku.com/articles/buildpacks) for Ruby, Rack, and Rails apps. It uses [Bundler](http://gembundler.com) for dependency management.
+**Note: this buildpack requires the user-env-compile feature to be enabled for your app. (See [the docs at Heroku Labs](https://devcenter.heroku.com/articles/labs-user-env-compile) for more information.) To enable it, run the following:**
+
+    heroku labs:enable user-env-compile
+
+This is a [Heroku buildpack](http://devcenter.heroku.com/articles/buildpacks) for Ruby, Rack, and Rails apps. It uses [Bundler](http://gembundler.com) for dependency management. It differs from the default Ruby buildpack provided by Heroku in that it runs the `rake db:migrate` task automatically on deployment for Rails apps.
 
 Usage
 -----
